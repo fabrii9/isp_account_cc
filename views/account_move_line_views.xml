@@ -34,8 +34,8 @@
         <field name="priority" eval="99"/>
         <field name="arch" type="xml">
             <search string="Cuenta Corriente">
-                <field name="move_id" string="Asiento"/>
-                <field name="ref" string="Referencia"/>
+                <field name="move_id"/>
+                <field name="ref"/>
                 <field name="journal_id"/>
                 <separator/>
                 <filter name="sin_conciliar" string="Sin Conciliar"
@@ -53,10 +53,10 @@
                 <filter name="pagos" string="Pagos"
                         domain="[('move_type', '=', 'entry')]"/>
                 <separator/>
-                <group expand="0" string="Agrupar por">
-                    <filter name="group_mes" string="Mes"
+                <group>
+                    <filter name="group_mes" string="Mes" domain="[]"
                             context="{'group_by': 'date:month'}"/>
-                    <filter name="group_diario" string="Diario"
+                    <filter name="group_diario" string="Diario" domain="[]"
                             context="{'group_by': 'journal_id'}"/>
                 </group>
             </search>
