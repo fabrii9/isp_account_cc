@@ -45,24 +45,18 @@
                         domain="[('full_reconcile_id', '!=', False)]"/>
                 <separator/>
                 <filter name="vencido" string="Vencido"
-                        domain="[('date_maturity', '&lt;', context_today().strftime('%Y-%m-%d')),
-                                 ('full_reconcile_id', '=', False),
-                                 ('balance', '&gt;', 0)]"/>
+                        domain="[('date_maturity', '&lt;', 'today'), ('full_reconcile_id', '=', False), ('balance', '&gt;', 0)]"/>
                 <filter name="al_dia" string="Al Día"
-                        domain="['|', ('date_maturity', '&gt;=', context_today().strftime('%Y-%m-%d')),
-                                 ('date_maturity', '=', False)]"/>
+                        domain="['|', ('date_maturity', '&gt;=', 'today'), ('date_maturity', '=', False)]"/>
                 <separator/>
                 <filter name="facturas" string="Facturas"
                         domain="[('move_type', '=', 'out_invoice')]"/>
                 <filter name="notas_credito" string="Notas de Crédito"
                         domain="[('move_type', '=', 'out_refund')]"/>
                 <filter name="pagos" string="Pagos"
-                        domain="[('move_type', '=', 'entry'), ('journal_id.type', '=', 'bank')]"/>
+                        domain="[('move_type', '=', 'entry')]"/>
                 <separator/>
-                <filter name="este_mes" string="Este Mes"
-                        domain="[('date', '&gt;=', (context_today()).strftime('%Y-%m-01'))]"/>
-                <filter name="este_anio" string="Este Año"
-                        domain="[('date', '&gt;=', (context_today()).strftime('%Y-01-01'))]"/>
+                <filter name="date" string="Fecha" date="date"/>
                 <separator/>
                 <group expand="0" string="Agrupar por">
                     <filter name="group_mes" string="Mes"
