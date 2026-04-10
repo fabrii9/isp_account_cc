@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Stat button "Cuenta Corriente" en el form de res.partner -->
+    <record id="view_partner_cc_button_form" model="ir.ui.view">
+        <field name="name">res.partner.cc.button.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority" eval="50"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_cuenta_corriente"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-balance-scale"
+                        groups="account.group_account_invoice"
+                        invisible="not payment_amount_due and not payment_amount_overdue">
+                    <div class="o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="payment_amount_due" widget="monetary"/>
+                        </span>
+                        <span class="o_stat_text">Cta. Corriente</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

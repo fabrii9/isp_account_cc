@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vista tree de Cuenta Corriente -->
+    <record id="view_cuenta_corriente_tree" model="ir.ui.view">
+        <field name="name">account.move.line.cuenta.corriente.list</field>
+        <field name="model">account.move.line</field>
+        <field name="priority" eval="99"/>
+        <field name="arch" type="xml">
+            <list string="Cuenta Corriente" create="false" edit="false"
+                  default_order="date desc, id desc"
+                  decoration-danger="date_maturity and date_maturity &lt; current_date and amount_residual &gt; 0"
+                  decoration-muted="full_reconcile_id">
+                <field name="date" string="Fecha"/>
+                <field name="date_maturity" string="Vencimiento"/>
+                <field name="move_id" string="Asiento"/>
+                <field name="move_name" string="Número" optional="hide"/>
+                <field name="ref" string="Referencia"/>
+                <field name="journal_id" string="Diario" optional="hide"/>
+                <field name="debit" string="Debe" sum="Total Debe"/>
+                <field name="credit" string="Haber" sum="Total Haber"/>
+                <field name="amount_residual" string="Saldo Pendiente" sum="Total Pendiente"/>
+                <field name="amount_currency" string="Monto Moneda" optional="hide"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="full_reconcile_id" string="Conciliación" optional="show"/>
+                <field name="matching_number" string="Match #" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista search para Cuenta Corriente -->
+    <record id="view_cuenta_corriente_search" model="ir.ui.view">
+        <field name="name">account.move.line.cuenta.corriente.search</field>
+        <field name="model">account.move.line</field>
+        <field name="priority" eval="99"/>
+        <field name="arch" type="xml">
+            <search string="Cuenta Corriente">
+                <field name="move_id" string="Asiento"/>
+                <field name="ref" string="Referencia"/>
+                <field name="date"/>
+                <field name="journal_id"/>
+                <separator/>
+                <!-- Filtros principales -->
+                <filter name="sin_conciliar" string="Sin Conciliar"
+                        domain="[('full_reconcile_id', '=', False)]"/>
+                <filter name="conciliado" string="Conciliado"
+                        domain="[('full_reconcile_id', '!=', False)]"/>
+                <separator/>
+                <filter name="vencido" string="Vencido"
+                        domain="[('date_maturity', '&lt;', context_today().strftime('%%Y-%%m-%%d')),
+                                 ('full_reconcile_id', '=', False),
+                                 ('balance', '>', 0)]"/>
+                <filter name="al_dia" string="Al Día"
+                        domain="['|', ('date_maturity', '>=', context_today().strftime('%%Y-%%m-%%d')),
+                                 ('date_maturity', '=', False)]"/>
+                <separator/>
+                <filter name="facturas" string="Facturas"
+                        domain="[('move_type', 'in', ['out_invoice'])]"/>
+                <filter name="notas_credito" string="Notas de Crédito"
+                        domain="[('move_type', 'in', ['out_refund'])]"/>
+                <filter name="notas_debito" string="Notas de Débito"
+                        domain="[('move_type', 'in', ['out_debit'])]"/>
+                <filter name="pagos" string="Pagos"
+                        domain="[('move_type', '=', 'entry'), ('journal_id.type', '=', 'bank')]"/>
+                <separator/>
+                <!-- Filtros de fecha -->
+                <filter name="este_mes" string="Este Mes"
+                        domain="[('date', '>=', (context_today() - relativedelta(day=1)).strftime('%%Y-%%m-%%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="mes_pasado" string="Mes Pasado"
+                        domain="[('date', '>=', (context_today() - relativedelta(months=1, day=1)).strftime('%%Y-%%m-%%d')),
+                                 ('date', '&lt;', (context_today() - relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="este_anio" string="Este Año"
+                        domain="[('date', '>=', (context_today() - relativedelta(month=1, day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <separator/>
+                <!-- Agrupadores -->
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_mes" string="Mes"
+                            context="{'group_by': 'date:month'}"/>
+                    <filter name="group_diario" string="Diario"
+                            context="{'group_by': 'journal_id'}"/>
+                    <filter name="group_conciliacion" string="Conciliación"
+                            context="{'group_by': 'full_reconcile_id'}"/>
+                    <filter name="group_vencimiento" string="Vencimiento"
+                            context="{'group_by': 'date_maturity:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción de ventana para Cuenta Corriente (usada desde menú) -->
+    <record id="action_cuenta_corriente" model="ir.actions.act_window">
+        <field name="name">Cuenta Corriente</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="view_id" ref="view_cuenta_corriente_tree"/>
+        <field name="search_view_id" ref="view_cuenta_corriente_search"/>
+        <field name="domain">[('account_id.account_type', '=', 'asset_receivable'),
+                              ('parent_state', '=', 'posted')]</field>
+        <field name="context">{'search_default_sin_conciliar': 1}</field>
+    </record>
+
+</odoo>
