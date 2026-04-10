@@ -47,11 +47,11 @@
                         domain="[('full_reconcile_id', '!=', False)]"/>
                 <separator/>
                 <filter name="vencido" string="Vencido"
-                        domain="[('date_maturity', '&lt;', context_today().strftime('%%Y-%%m-%%d')),
+                        domain="[('date_maturity', '&lt;', context_today().strftime('%Y-%m-%d')),
                                  ('full_reconcile_id', '=', False),
-                                 ('balance', '>', 0)]"/>
+                                 ('balance', '&gt;', 0)]"/>
                 <filter name="al_dia" string="Al Día"
-                        domain="['|', ('date_maturity', '>=', context_today().strftime('%%Y-%%m-%%d')),
+                        domain="['|', ('date_maturity', '&gt;=', context_today().strftime('%Y-%m-%d')),
                                  ('date_maturity', '=', False)]"/>
                 <separator/>
                 <filter name="facturas" string="Facturas"
@@ -65,13 +65,13 @@
                 <separator/>
                 <!-- Filtros de fecha -->
                 <filter name="este_mes" string="Este Mes"
-                        domain="[('date', '>=', (context_today() - relativedelta(day=1)).strftime('%%Y-%%m-%%d')),
-                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
                 <filter name="mes_pasado" string="Mes Pasado"
-                        domain="[('date', '>=', (context_today() - relativedelta(months=1, day=1)).strftime('%%Y-%%m-%%d')),
-                                 ('date', '&lt;', (context_today() - relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(months=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
                 <filter name="este_anio" string="Este Año"
-                        domain="[('date', '>=', (context_today() - relativedelta(month=1, day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d'))]"/>
                 <separator/>
                 <!-- Agrupadores -->
                 <group expand="0" string="Agrupar por">
