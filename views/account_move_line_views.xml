@@ -36,7 +36,6 @@
             <search string="Cuenta Corriente">
                 <field name="move_id" string="Asiento"/>
                 <field name="ref" string="Referencia"/>
-                <field name="date"/>
                 <field name="journal_id"/>
                 <separator/>
                 <filter name="sin_conciliar" string="Sin Conciliar"
@@ -45,9 +44,7 @@
                         domain="[('full_reconcile_id', '!=', False)]"/>
                 <separator/>
                 <filter name="vencido" string="Vencido"
-                        domain="[('date_maturity', '&lt;', 'today'), ('full_reconcile_id', '=', False), ('balance', '&gt;', 0)]"/>
-                <filter name="al_dia" string="Al Día"
-                        domain="['|', ('date_maturity', '&gt;=', 'today'), ('date_maturity', '=', False)]"/>
+                        domain="[('date_maturity', '&lt;', (context_today()).strftime('%Y-%m-%d')), ('full_reconcile_id', '=', False)]"/>
                 <separator/>
                 <filter name="facturas" string="Facturas"
                         domain="[('move_type', '=', 'out_invoice')]"/>
@@ -56,17 +53,11 @@
                 <filter name="pagos" string="Pagos"
                         domain="[('move_type', '=', 'entry')]"/>
                 <separator/>
-                <filter name="date" string="Fecha" date="date"/>
-                <separator/>
                 <group expand="0" string="Agrupar por">
                     <filter name="group_mes" string="Mes"
                             context="{'group_by': 'date:month'}"/>
                     <filter name="group_diario" string="Diario"
                             context="{'group_by': 'journal_id'}"/>
-                    <filter name="group_conciliacion" string="Conciliación"
-                            context="{'group_by': 'full_reconcile_id'}"/>
-                    <filter name="group_vencimiento" string="Vencimiento"
-                            context="{'group_by': 'date_maturity:month'}"/>
                 </group>
             </search>
         </field>
