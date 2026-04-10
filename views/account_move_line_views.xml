@@ -10,19 +10,26 @@
             <list string="Cuenta Corriente" create="false" edit="false"
                   default_order="date desc, id desc"
                   decoration-danger="date_maturity and date_maturity &lt; current_date and amount_residual &gt; 0"
-                  decoration-muted="full_reconcile_id">
+                  decoration-muted="full_reconcile_id"
+                  decoration-info="parent_state == 'draft'">
                 <field name="date" string="Fecha"/>
                 <field name="date_maturity" string="Vencimiento"/>
-                <field name="move_id" string="Asiento"/>
+                <field name="move_id" string="Documento"/>
                 <field name="move_name" string="Número" optional="hide"/>
                 <field name="ref" string="Referencia"/>
                 <field name="journal_id" string="Diario" optional="hide"/>
+                <field name="parent_state" string="Estado" widget="badge"
+                       decoration-info="parent_state == 'draft'"
+                       decoration-success="parent_state == 'posted'"/>
                 <field name="debit" string="Debe" sum="Total Debe"/>
                 <field name="credit" string="Haber" sum="Total Haber"/>
                 <field name="amount_residual" string="Saldo Pendiente" sum="Total Pendiente"/>
                 <field name="amount_currency" string="Monto Moneda" optional="hide"/>
                 <field name="currency_id" column_invisible="True"/>
                 <field name="full_reconcile_id" string="Conciliación" optional="show"/>
+                <button name="action_open_parent_move" type="object"
+                        string="Abrir" icon="fa-external-link"
+                        title="Abrir Factura/Pago"/>
             </list>
         </field>
     </record>
@@ -37,6 +44,12 @@
                 <field name="move_id"/>
                 <field name="ref"/>
                 <field name="journal_id"/>
+                <field name="parent_state"/>
+                <separator/>
+                <filter name="publicado" string="Publicado"
+                        domain="[('parent_state', '=', 'posted')]"/>
+                <filter name="borrador" string="Borrador"
+                        domain="[('parent_state', '=', 'draft')]"/>
                 <separator/>
                 <filter name="sin_conciliar" string="Sin Conciliar"
                         domain="[('full_reconcile_id', '=', False)]"/>
@@ -71,8 +84,8 @@
         <field name="view_id" ref="view_cuenta_corriente_tree"/>
         <field name="search_view_id" ref="view_cuenta_corriente_search"/>
         <field name="domain">[('account_id.account_type', '=', 'asset_receivable'),
-                              ('parent_state', '=', 'posted')]</field>
-        <field name="context">{'search_default_sin_conciliar': 1}</field>
+                              ('parent_state', '!=', 'cancel')]</field>
+        <field name="context">{'search_default_sin_conciliar': 1, 'search_default_publicado': 1}</field>
     </record>
 
 </odoo>

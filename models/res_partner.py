@@ -20,10 +20,11 @@ class ResPartner(models.Model):
             'domain': [
                 ('partner_id', '=', self.commercial_partner_id.id),
                 ('account_id.account_type', '=', 'asset_receivable'),
-                ('parent_state', '=', 'posted'),
+                ('parent_state', '!=', 'cancel'),
             ],
             'context': {
                 'search_default_sin_conciliar': 1,
+                'search_default_publicado': 1,
                 'default_partner_id': self.id,
             },
         }

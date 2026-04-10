@@ -13,8 +13,7 @@
                         type="object"
                         class="oe_stat_button"
                         icon="fa-balance-scale"
-                        groups="account.group_account_invoice"
-                        invisible="not payment_amount_due and not payment_amount_overdue">
+                        groups="account.group_account_invoice">
                     <div class="o_stat_info">
                         <span class="o_stat_value">
                             <field name="payment_amount_due" widget="monetary"/>
